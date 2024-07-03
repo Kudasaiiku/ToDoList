@@ -1,0 +1,294 @@
+﻿@model IEnumerable<ToDoList.Models.ToDoItemModel>
+@{
+    ViewBag.Title = "ToDoList";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+</head>
+
+<body>
+    <!-- Меню -->
+    <div id="menu">
+        <div class="dropdown">
+
+            <button class="btn btn-secondary dropdown-toggle bg-transparent border-1 text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                @ViewBag.UserName
+            </button>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddTask">
+                        Добавить задачу
+                    </button>
+                </li>
+                <li>
+                    <form method="post" action="@Url.Action("Logout", "Account")">
+                        <button type="submit" class="dropdown-item bg-danger">
+                            Выход
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    <h1 class="text">Список задач</h1>
+
+    <!-- Фильтры -->
+    <form method="get" action="@Url.Action("Index", "Home")">
+        <table class="filter-table">
+            <tr>
+                <td>Фильтры:</td>
+                <td>
+                    <select id="statusFilter" name="status">
+                        <option value="" disabled selected>Статус</option>
+                        <option value="true">Выполнена</option>
+                        <option value="false">Невыполнена</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="priorityFilter" name="priority">
+                        <option value="" disabled selected>Приоритет</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" id="applyFilters">Применить</button>
+                </td>
+                <td>
+                    <button type="button" id="dropFilters" onclick="location.href='@Url.Action("Index", "Home")'">Сбросить фильтры</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <!-- Таблица задач -->
+    <table class="task-table">
+
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Дедлайн</th>
+                <th>Приоритет</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td class="td">@task.IsCompleted</td>
+                    <td class="td">@task.DueDate.ToString("dd.MM.yyyy")</td>
+                    <td class="td">@task.Priority</td>
+                    
+                    <td class="td">
+                        <button class="edit" data-bs-toggle="modal" data-bs-target="#modalEditTask"
+                        onclick="populateEditForm(@task.Id, '@task.Title', '@task.Description', '@task.IsCompleted', '@task.DueDate.ToString("yyyy-MM-dd")', @task.Priority)">
+                            Изменить
+                        </button>
+                    </td>
+                    <td class="td">
+                        <button class="delete" data-bs-toggle="modal" data-bs-target="#modalDeleteTask"
+                        onclick="populateDeleteForm(@task.Id)">
+                            Удалить
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Модальное окно/Добавление задачи -->
+    <div class="modal fade" id="modalAddTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Добавление задачи</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="post" action="@Url.Action("AddTask", "Home")">
+
+                        <div class="AddTask">
+                            <label class="modal-label-title" for="title">
+                                Название задачи
+                            </label>
+                            <input class="modal-input-title" type="text" id="title" name="title" placeholder="Название" required pattern="\S.*" title="Пожалуйста, введите корректное название задачи" maxlength="100"/>
+                        </div>
+
+                        <div class="AddTask">
+                            <label class="modal-label-description" for="description">
+                                Описание задачи
+                            </label>
+                            <input class="modal-input-description" type="text" id="description" name="description" placeholder="Описание" required pattern="\S.*" title="Пожалуйста, введите корректное название задачи" maxlength="249"/>
+                        </div>
+
+                        <div class="AddTask">
+                            <label class="modal-label-status" for="status">
+                                Статус выполнения
+                            </label>
+                            <select class="modal-select-status" id="status" name="isCompleted" required>
+                                <option disabled selected value="">Статус</option>
+                                <option value="true">Выполнена</option>
+                                <option value="false">Невыполнена</option>
+                            </select>
+                        </div>
+
+                        <div class="AddTask">
+                            <label class="modal-label-duedate" for="duedate">
+                                Дедлайн
+                            </label>
+                            <input class="modal-input-duedate" type="date" id="duedate" name="dueDate" required />
+                        </div>
+
+                        <div class="AddTask">
+                            <label class="modal-label-priority" for="priority">
+                                Приоритет
+                            </label>
+                            <select class="modal-select-priority" id="priority" name="priority" required>
+                                <option disabled selected value="">Приоритет</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+
+                        <button class="modal-btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            Закрыть
+                        </button>
+                        <button class="modal-btn-send" type="submit" id="submit">
+                            Отправить
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно/Редактирование задачи -->
+    <div class="modal fade" id="modalEditTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Редактирование задачи</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="post" action="@Url.Action("EditTask", "Home")">
+
+                        <input type="hidden" id="editTaskId" name="Id"/>
+
+                        <div class="EditTask">
+                            <label class="modal-label-title" for="editTitle">
+                                Название задачи
+                            </label>
+                            <input class="modal-input-title" type="text" id="editTitle" name="title" placeholder="Название" required pattern="\S.*" title="Пожалуйста, введите корректное название задачи" maxlength="100"/>
+                        </div>
+
+                        <div class="EditTask">
+                            <label class="modal-label-description" for="editDescription">
+                                Описание задачи
+                            </label>
+                            <input class="modal-input-description" type="text" id="editDescription" name="description" placeholder="Описание" required pattern="\S.*" title="Пожалуйста, введите корректное название задачи" maxlength="249"/>
+                        </div>
+
+                        <div class="EditTask">
+                            <label class="modal-label-status" for="editStatus">
+                                Статус выполнения
+                            </label>
+                            <select class="modal-select-status" id="editStatus" name="isCompleted" required>
+                                <option disabled selected value="">Статус</option>
+                                <option value="true">Выполнена</option>
+                                <option value="false">Невыполнена</option>
+                            </select>
+                        </div>
+
+                        <div class="EditTask">
+                            <label class="modal-label-duedate" for="editDueDate">
+                                Дедлайн
+                            </label>
+                            <input class="modal-input-duedate" type="date" id="editDueDate" name="dueDate" required/>
+                        </div>
+
+                        <div class="EditTask">
+                            <label class="modal-label-priority" for="editPriority">
+                                Приоритет
+                            </label>
+                            <select class="modal-select-priority" id="editPriority" name="priority" required>
+                                <option disabled selected value="">Приоритет</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+
+                        <button class="modal-btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            Закрыть
+                        </button>
+                        <button class="modal-btn-send" type="submit" id="submit">
+                            Изменить
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно/Удаление задачи -->
+    <div class="modal fade" id="modalDeleteTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Удаление задачи</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="post" action="@Url.Action("DeleteTask", "Home")" id="deleteForm">
+
+                        <input type="hidden" id="deleteTaskId" name="Id"/>
+
+                        <label class="modal-label-delete" for="name">
+                            Удалить эту задачу?
+                        </label>
+
+                        <button class="modal-btn-delete-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            Отмена
+                        </button>
+                        <button class="modal-btn-delete-delete" type="submit" id="submit">
+                            Удалить
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/site.js"></script>
+</body>
+
+</html>

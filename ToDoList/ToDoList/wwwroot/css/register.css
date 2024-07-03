@@ -1,0 +1,77 @@
+h1 {
+    text-align: center;
+    padding-top: 20px;
+}
+
+table {
+    margin: auto;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.form-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-table td, .form-table th {
+    padding: 8px;
+    word-wrap: break-word;
+}
+
+.form-table .text {
+    width: 30%;
+    text-align: left;
+    padding-right: 10px;
+}
+
+.form-table .form-control {
+    width: 100%;
+}
+
+.text {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    font-size: 30px;
+}
+
+.button1 {
+    text-align: center;
+    padding-top: 40px;
+    font-size: 30px;
+}
+
+button {
+    background: #8AC7FF;
+    border: none;
+    width: 400px;
+    border-radius: 5px;
+    height: 55px;
+}
+
+.form-control {
+    width: 400px;
+    background: #f4f4f4;
+    border: none;
+    border-radius: 5px;
+    font-size: 30px;
+}
+
+.field-error {
+    font-size: 15px;
+}
+
+.button2 {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 30px;
+}
+
+a {
+    color: #3EA2FF;
+}

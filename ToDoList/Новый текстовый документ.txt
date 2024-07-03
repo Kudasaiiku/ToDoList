@@ -1,0 +1,275 @@
+@model IEnumerable<ToDoList.Models.ToDoItemModel>
+@{
+    ViewBag.Title = "ToDoList";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <title>To-Do List</title>
+
+    <style>
+        .text {
+            padding-left: 10px;
+        }
+
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .task-table th, .task-table td {
+                padding: 10px;
+                border: 1px solid #DFDFDF;
+            }
+
+            .task-table th {
+                background-color: #f4f4f4;
+                text-align: center;
+            }
+
+        .td {
+            text-align: center;
+        }
+
+        .filter-table td {
+            padding: 10px;
+            border: none;
+        }
+
+        .filter-table {
+            font-size: 25px;
+        }
+
+        select {
+            background-color: #f4f4f4;
+            border-color: #DFDFDF;
+            width: 160px;
+            height: 40px;
+        }
+
+        option {
+            background-color: #ffffff;
+        }
+
+        button {
+            background: #8AC7FF;
+            border: none;
+            width: 160px;
+        }
+
+        .edit {
+            background: #8AC7FF;
+            border: none;
+            width: 120px;
+        }
+
+        .delete {
+            background: #DC3545;
+            border: none;
+            width: 130px;
+        }
+
+        #menu {
+            position: absolute;
+            right: 0;
+            padding-right: 15px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="menu">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <li><button class="dropdown-item" type="button">Action</button></li>
+                <li><button class="dropdown-item" type="button">Another action</button></li>
+                <li><button class="dropdown-item" type="button">Something else here</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <h1 class="text">Список задач</h1>
+
+    <table class="filter-table">
+        <tr>
+            <td>Фильтры:</td>
+            <td>
+                <select>
+                    <option disabled selected>Статус</option>
+                    <option>да</option>
+                    <option>нет</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option disabled selected>Приоритет</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                </select>
+            </td>
+            <td>
+                <button>Применить</button>
+            </td>
+        </tr>
+    </table>
+
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Дедлайн</th>
+                <th>Приоритет</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td class="td">@task.IsCompleted</td>
+                    <td class="td">@task.DueDate.ToString("dd.MM.yyyy")</td>
+                    <td class="td">@task.Priority</td>
+                    <td class="td"><button class="edit">Изменить</button></td>
+                    <td class="td"><button class="delete">Удалить</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="modalExp" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Насколько хорошо Вы знакомы с WoW?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-width: 600px;">
+                    <form method="get" action="#" id="orderForm">
+                        <div class="testWoW">
+                            <label class="label" for="name" style="margin-right: 181px;">
+                                1. Как называется столица Орды?
+                            </label>
+                            <select id="inp1">
+                                <option value="Громовой утес" selected>
+                                    Громовой утес
+                                </option>
+                                <option value="Оргриммар">
+                                    Оргриммар
+                                </option>
+                                <option value="Подгород">
+                                    Подгород
+                                </option>
+                                <option value="Стальгорн">
+                                    Стальгорн
+                                </option>
+                            </select>
+                        </div>
+                        <div class="testWoW">
+                            <label class="label" for="name" style="margin-right: 177px;">
+                                2. Кто является лидером Альянса?
+                            </label>
+                            <select id="inp2">
+                                <option value="Тиранда Шелест Ветра" selected>
+                                    Тиранда Шелест Ветра
+                                </option>
+                                <option value="Генн Седогрив">
+                                    Генн Седогрив
+                                </option>
+                                <option value="Андуин Ринн">
+                                    Андуин Ринн
+                                </option>
+                                <option value="Джайна Праудмур">
+                                    Джайна Праудмур
+                                </option>
+                            </select>
+                        </div>
+                        <div class="testWoW">
+                            <label class="label" for="name">
+                                3. Какой континент является родиной Ночных Эльфов?
+                            </label>
+                            <select id="inp3">
+                                <option value="Восточные королевства" selected>
+                                    Восточные королевства
+                                </option>
+                                <option value="Забытые земли">
+                                    Забытые земли
+                                </option>
+                                <option value="Калимдор">
+                                    Калимдор
+                                </option>
+                                <option value="Расколотые острова">
+                                    Расколотые острова
+                                </option>
+                            </select>
+                        </div>
+                        <div class="testWoW">
+                            <label class="label" for="name">
+                                4. Какой класс обладает способностью "Огненная глыба"?
+                            </label>
+                            <select id="inp4">
+                                <option value="Маг" selected>
+                                    Маг
+                                </option>
+                                <option value="Жрец">
+                                    Жрец
+                                </option>
+                                <option value="Охотник">
+                                    Охотник
+                                </option>
+                                <option value="Разбойник">
+                                    Разбойник
+                                </option>
+                            </select>
+                        </div>
+                        <div class="testWoW">
+                            <label class="label" for="name">
+                                5. Какая раса может играть за Шамана только на стороне Орды?
+                            </label>
+                            <select id="inp5">
+                                <option value="Нежить" selected>
+                                    Нежить
+                                </option>
+                                <option value="Орки">
+                                    Орки
+                                </option>
+                                <option value="Эльфы крови">
+                                    Эльфы крови
+                                </option>
+                                <option value="Гномы">
+                                    Гномы
+                                </option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                style="margin-top: 10px;">
+                            Закрыть
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submit"
+                                style="margin-top: 10px; background-color: #e4ac35; border: none;">
+                            Отправить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

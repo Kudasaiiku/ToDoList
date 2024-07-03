@@ -1,0 +1,51 @@
+﻿@model LoginModel
+@{
+    ViewBag.Title = "Авторизация";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+
+<body>
+    <h1>Авторизация</h1>
+
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        <table class="form-table">
+            <tr>
+                <td class="text">Email</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "Email" })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "field-error" })
+                </td>
+            </tr>
+            <tr>
+                <td class="text">Пароль</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Пароль" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "field-error" }) 
+                </td>
+            </tr>
+            <tr>
+                <td class="button1"><button>Войти</button></td>
+            </tr>
+            <tr>
+                <td class="button2"><a href="/Account/Register">Регистрация</a></td>
+            </tr>
+        </table>
+    }
+</body>
+
+
+</html>
